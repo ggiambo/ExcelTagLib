@@ -3,7 +3,7 @@ package net.rcfmedia.taglib.excel.tags;
 import javax.servlet.jsp.JspException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.Border;
+import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.Borders;
 
 /**
  * Handles the <xls:row> tag
@@ -16,7 +16,7 @@ public class RowTag extends ExcelBaseTag {
     private static final long serialVersionUID = 1L;
 
     private String height;
-    private Border border;
+    private Borders border;
 
     @Override
     public int doStartTag() throws JspException {
@@ -33,7 +33,7 @@ public class RowTag extends ExcelBaseTag {
     }
 
     public void setBorder( String borders ) {
-        border = new Border( borders );
+        border = new Borders( borders );
     }
 
 }

@@ -4,7 +4,7 @@ import javax.servlet.jsp.JspException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.Align;
-import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.Border;
+import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.Borders;
 import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.Valign;
 
 /**
@@ -20,7 +20,7 @@ public class CellTag extends ExcelBaseTag {
     private Align align;
     private Valign valign;
     private String width;
-    private Border border;
+    private Borders border;
 
     @Override
     public int doStartTag() throws JspException {
@@ -59,7 +59,7 @@ public class CellTag extends ExcelBaseTag {
     }
 
     public void setBorder( String borders ) {
-        border = new Border( borders );
+        border = new Borders( borders );
     }
 
 }

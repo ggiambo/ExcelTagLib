@@ -13,10 +13,10 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.Align;
-import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.Border;
+import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.Borders;
 import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.BorderDef;
 import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.BorderType;
-import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.NVPair;
+import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.Border;
 import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.Valign;
 
 /**
@@ -37,7 +37,7 @@ public class WorkbookWrapper implements Serializable {
     private HSSFCellStyle defaultRowStyle;
     private Map<Integer, String> sheetColumnWidth; // Map<columnIndex, width>
     private Map<CellCacheKey, HSSFCellStyle> stylesCache;
-    private Border actualRowBorderDefinitions;
+    private Borders actualRowBorderDefinitions;
     private String actualRowHeight;
 
     /**
@@ -88,7 +88,7 @@ public class WorkbookWrapper implements Serializable {
      * @param height row height in points, may be empty
      * @param border border definition, may be empty
      */
-    protected void createRow( String height, Border border ) {
+    protected void createRow( String height, Borders border ) {
         actualRowHeight = height;
         // create the row
         int rowNum = 0;
@@ -108,12 +108,12 @@ public class WorkbookWrapper implements Serializable {
     /**
      * Create a new cell with the supplied values.
      *
-     * @param align  may be <i>center</i>, <i>left</i> or <i>right</i>
-     * @param valign may be <i>center</i>, <i>top</i> or <i>bottom</i>
-     * @param width  width in points, may be empty
-     * @param border border definition
+     * @param align   may be <i>center</i>, <i>left</i> or <i>right</i>
+     * @param valign  may be <i>center</i>, <i>top</i> or <i>bottom</i>
+     * @param width   width in points, may be empty
+     * @param borders border definition
      */
-    protected void createCell( String cellContent, Align align, Valign valign, String width, Border border ) {
+    protected void createCell( String cellContent, Align align, Valign valign, String width, Borders borders ) {
         // create the cell
         int cellIndex = 0;
         if( actualCell != null ) {
@@ -128,10 +128,10 @@ public class WorkbookWrapper implements Serializable {
         }
 
         // inherit the border definition from the row
-        Border cellBorders = new Border( actualRowBorderDefinitions );
+        Borders cellBorders = new Borders( actualRowBorderDefinitions );
         // overwrite with actual cell borders
-        if( border != null && border.iterator().hasNext() ) {
-            for( NVPair<BorderDef, BorderType> b : border ) {
+        if( borders != null && borders.iterator().hasNext() ) {
+            for( Border b : borders ) {
                 cellBorders.add( b );
             }
         }
@@ -173,11 +173,11 @@ public class WorkbookWrapper implements Serializable {
      * @param height
      * @param align
      * @param valign
-     * @param border
+     * @param borders
      * @return
      */
-    private HSSFCellStyle getCellStyle( String height, Align align, Valign valign, Border border ) {
-        CellCacheKey cacheKey = new CellCacheKey( height, align, valign, border );
+    private HSSFCellStyle getCellStyle( String height, Align align, Valign valign, Borders borders ) {
+        CellCacheKey cacheKey = new CellCacheKey( height, align, valign, borders );
         HSSFCellStyle cellStyle = stylesCache.get( cacheKey );
 
         // create a new cell
@@ -198,7 +198,7 @@ public class WorkbookWrapper implements Serializable {
             }
 
             // create a new cellStyle only if supplied values are valid
-            if( isValidCellStyle( align, valign, border ) ) {
+            if( isValidCellStyle( align, valign, borders ) ) {
                 cellStyle = wb.createCellStyle();
 
                 if( null != align ) {
@@ -217,11 +217,11 @@ public class WorkbookWrapper implements Serializable {
                     }
                 }
 
-                if( null != border ) {
+                if( null != borders ) {
                     // border
-                    for( NVPair<BorderDef, BorderType> entry : border ) {
-                        BorderDef borderDef = entry.getName();
-                        BorderType borderType = entry.getValue();
+                    for( Border border : borders ) {
+                        BorderDef borderDef = border.getBorderDef();
+                        BorderType borderType = border.getBorderType();
                         if( BorderType.NONE == borderType ) {
                             // trick to eliminate also the "invisible" border
                             cellStyle.setFillForegroundColor( new HSSFColor.WHITE().getIndex() );
@@ -258,7 +258,7 @@ public class WorkbookWrapper implements Serializable {
      * @param border
      * @return
      */
-    private boolean isValidCellStyle( Align align, Valign valign, Border border ) {
+    private boolean isValidCellStyle( Align align, Valign valign, Borders border ) {
         if( align == null && valign == null && ( border == null || !border.iterator().hasNext() ) ) {
             return false;
         }
@@ -285,9 +285,9 @@ public class WorkbookWrapper implements Serializable {
         private String height;
         private Align align;
         private Valign valign;
-        private Border border;
+        private Borders border;
 
-        public CellCacheKey( String height, Align align, Valign valign, Border border ) {
+        public CellCacheKey( String height, Align align, Valign valign, Borders border ) {
             this.height = height;
             this.align = align;
             this.valign = valign;

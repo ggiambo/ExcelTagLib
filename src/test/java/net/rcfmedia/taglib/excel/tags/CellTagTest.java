@@ -9,10 +9,10 @@ import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.Align;
 import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.Border;
 import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.BorderDef;
 import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.BorderType;
-import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.NVPair;
+import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.Borders;
 import net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils.Valign;
 
-public class CellTagtest {
+public class CellTagTest {
 
     @Test
     public void testSetAlign() throws Exception {
@@ -63,27 +63,27 @@ public class CellTagtest {
     public void TestSetBorders() throws Exception {
 
         CellTag cellTag;
-        Border border;
+        Borders borders;
 
         cellTag = new CellTag();
         cellTag.setBorder( "top:none;left:medium; bottom : hair;right: thick ; all :default" );
-        border = (Border) getFieldValue( cellTag, "border" );
-        List<NVPair<BorderDef, BorderType>> borders = new ArrayList<>();
-        for( NVPair<BorderDef, BorderType> b : border ) {
-            borders.add( b );
+        borders = (Borders) getFieldValue( cellTag, "border" );
+        List<Border> borderList = new ArrayList<>();
+        for( Border border : borders ) {
+            borderList.add( border );
         }
-        Assert.assertEquals( 5, borders.size() );
+        Assert.assertEquals( 5, borderList.size() );
 
-        Assert.assertTrue( borders.contains( new NVPair<>( BorderDef.TOP, BorderType.NONE ) ) );
-        Assert.assertTrue( borders.contains( new NVPair<>( BorderDef.LEFT, BorderType.MEDIUM ) ) );
-        Assert.assertTrue( borders.contains( new NVPair<>( BorderDef.BOTTOM, BorderType.HAIR ) ) );
-        Assert.assertTrue( borders.contains( new NVPair<>( BorderDef.RIGHT, BorderType.THICK ) ) );
-        Assert.assertTrue( borders.contains( new NVPair<>( BorderDef.ALL, BorderType.DEFAULT ) ) );
+        Assert.assertTrue( borderList.contains( new Border( BorderDef.TOP, BorderType.NONE ) ) );
+        Assert.assertTrue( borderList.contains( new Border( BorderDef.LEFT, BorderType.MEDIUM ) ) );
+        Assert.assertTrue( borderList.contains( new Border( BorderDef.BOTTOM, BorderType.HAIR ) ) );
+        Assert.assertTrue( borderList.contains( new Border( BorderDef.RIGHT, BorderType.THICK ) ) );
+        Assert.assertTrue( borderList.contains( new Border( BorderDef.ALL, BorderType.DEFAULT ) ) );
 
         cellTag = new CellTag();
         cellTag.setBorder( "XXX" );
-        border = (Border) getFieldValue( cellTag, "border" );
-        Assert.assertFalse( border.iterator().hasNext() );
+        borders = (Borders) getFieldValue( cellTag, "border" );
+        Assert.assertFalse( borders.iterator().hasNext() );
     }
 
     private Object getFieldValue( CellTag cellTag, String fieldName ) throws Exception {

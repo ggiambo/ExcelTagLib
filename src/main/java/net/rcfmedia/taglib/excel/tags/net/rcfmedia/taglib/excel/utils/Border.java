@@ -1,52 +1,38 @@
 package net.rcfmedia.taglib.excel.tags.net.rcfmedia.taglib.excel.utils;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class Border {
 
-public class Border implements Iterable<NVPair<BorderDef, BorderType>> {
+    private final BorderDef borderDef;
+    private final BorderType borderType;
 
-    private static final Logger LOG = LoggerFactory.getLogger( Border.class );
-
-    private Set<NVPair<BorderDef, BorderType>> borders;
-
-    public Border( Border border ) {
-        this.borders = new HashSet<>();
-        if( null == border ) {
-            return;
-        }
-        for( NVPair<BorderDef, BorderType> b : border ) {
-            borders.add( b );
-        }
+    public Border( BorderDef borderDef, BorderType borderType ) {
+        this.borderDef = borderDef;
+        this.borderType = borderType;
     }
 
-    public Border( String borders ) {
-        if( borders != null && borders.trim().length() != 0 ) {
-            this.borders = new HashSet<>();
-            for( String component : borders.split( ";" ) ) {
-                String[] keyVal = component.split( ":" );
-                if( keyVal.length == 2 ) {
-                    String borderDef = keyVal[ 0 ].trim().toUpperCase();
-                    String borderType = keyVal[ 1 ].trim().toUpperCase();
-                    try {
-                        this.borders.add( new NVPair<>( BorderDef.valueOf( borderDef ), BorderType.valueOf( borderType ) ) );
-                    } catch( IllegalArgumentException e ) {
-                        LOG.warn( "Ignoring unknown value of 'borders=" + borders + "'" );
-                    }
-                }
-            }
-        }
+    public BorderDef getBorderDef() {
+        return borderDef;
     }
 
-    public void add( NVPair<BorderDef, BorderType> border ) {
-        borders.add( border );
+    public BorderType getBorderType() {
+        return borderType;
     }
 
     @Override
-    public Iterator<NVPair<BorderDef, BorderType>> iterator() {
-        return borders.iterator();
+    public int hashCode() {
+        return borderDef.hashCode() * borderType.hashCode();
+    }
+
+    @Override
+    public boolean equals( Object obj ) {
+        if( this == obj ) {
+            return true;
+        }
+        if( !( obj instanceof Border ) ) {
+            return false;
+        }
+        Border other = (Border) obj;
+        return this.borderDef.equals( other.getBorderDef() ) && this.borderType.equals( other.getBorderType() );
     }
 
 }
